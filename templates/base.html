@@ -1,0 +1,79 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MeowMeowBeenz{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="{% static 'predictions/css/style.css' %}">
+</head>
+<body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <symbol id="cat-face" viewBox="0 0 200 200">
+                <path d="M35,15 L18,72 Q8,112 14,132 Q32,180 100,182 Q168,180 186,132 Q192,112 182,72 L165,15 L120,55 Q100,68 80,55 Z"
+                      fill="currentColor" stroke="#2a160b" stroke-width="7" stroke-linejoin="round"/>
+                <ellipse cx="70" cy="100" rx="21" ry="25" fill="#fdf7e8" stroke="#2a160b" stroke-width="5"/>
+                <ellipse cx="130" cy="100" rx="21" ry="25" fill="#fdf7e8" stroke="#2a160b" stroke-width="5"/>
+                <circle cx="70" cy="104" r="9" fill="#2a160b"/>
+                <circle cx="130" cy="104" r="9" fill="#2a160b"/>
+                <path d="M92,130 L108,130 L100,142 Z" fill="#2a160b"/>
+                <path d="M100,142 Q90,156 76,148 M100,142 Q110,156 124,148" fill="none" stroke="#2a160b" stroke-width="5" stroke-linecap="round"/>
+                <path d="M42,128 L4,120 M45,140 L6,138 M48,152 L10,156" fill="none" stroke="#2a160b" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+                <path d="M158,128 L196,120 M155,140 L194,138 M152,152 L190,156" fill="none" stroke="#2a160b" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+            </symbol>
+        </defs>
+    </svg>
+    <header class="site-header">
+        <nav class="nav">
+            <a class="brand" href="{% url 'predictions:dashboard' %}">
+                <svg class="paw-icon" viewBox="0 0 200 200" aria-hidden="true"><use href="#cat-face"></use></svg>
+                MeowMeowBeenz
+            </a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'predictions:dashboard' %}">Dashboard</a>
+                <a href="{% url 'predictions:poll_create' %}">New Poll</a>
+                <a href="{% url 'predictions:history' %}">History</a>
+                <a href="{% url 'predictions:leaderboard_overall' %}">Leaderboard</a>
+                <a href="{% url 'predictions:leaderboard_subject_index' %}">By Person</a>
+                {% if user.is_superuser %}
+                    <a href="{% url 'accounts:user_list' %}">Users</a>
+                {% endif %}
+                <span class="spacer"></span>
+                <span class="who">{{ user.username }}</span>
+                <form method="post" action="{% url 'account_logout' %}" class="inline-form">
+                    {% csrf_token %}
+                    <button type="submit" class="link-button">Log out</button>
+                </form>
+            {% else %}
+                <span class="spacer"></span>
+                <a href="{% url 'account_login' %}">Log in</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    {% if request.session.impersonator_id %}
+        <div class="impersonation-banner">
+            You're impersonating <strong>{{ user.username }}</strong>.
+            <form method="post" action="{% url 'accounts:impersonate_stop' %}" class="inline-form">
+                {% csrf_token %}
+                <button type="submit" class="link-button">Stop impersonating</button>
+            </form>
+        </div>
+    {% endif %}
+
+    <main class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="message {{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{% static 'predictions/js/rating_widget.js' %}" defer></script>
+</body>
+</html>

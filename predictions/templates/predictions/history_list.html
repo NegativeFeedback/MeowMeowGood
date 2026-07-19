@@ -1,0 +1,33 @@
+﻿{% extends "base.html" %}
+{% load cat_extras %}
+{% block title %}History - MeowMeowBeenz{% endblock %}
+{% block content %}
+    <h1>History</h1>
+
+    {% if polls %}
+        <ul class="poll-list">
+            {% for poll in polls %}
+                <li>
+                    {% cat_icon poll.actual_rating 22 %}
+                    <a href="{% url 'predictions:poll_detail' poll.pk %}">{{ poll.item_name }}</a>
+                    — about {{ poll.subject.username }}, actual rating {{ poll.actual_rating }}/5
+                    ({{ poll.guesses.count }} guess{{ poll.guesses.count|pluralize }})
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% if is_paginated %}
+            <nav class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+    {% else %}
+        <p class="muted">No closed polls yet.</p>
+    {% endif %}
+{% endblock %}

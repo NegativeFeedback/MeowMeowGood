@@ -1,0 +1,21 @@
+﻿{% extends "base.html" %}
+{% block title %}Users - MeowMeowBeenz{% endblock %}
+{% block content %}
+    <h1>Users</h1>
+    <ul class="poll-list">
+        {% for u in users %}
+            <li>
+                {{ u.username }}
+                {% if u.is_superuser %}<span class="muted">(superuser)</span>{% endif %}
+                {% if u.pk != request.user.pk %}
+                    <form method="post" action="{% url 'accounts:impersonate_start' u.pk %}" class="inline-form">
+                        {% csrf_token %}
+                        <button type="submit" class="link-button">Impersonate</button>
+                    </form>
+                {% else %}
+                    <span class="muted">(you)</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

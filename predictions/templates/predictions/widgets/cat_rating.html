@@ -1,0 +1,17 @@
+{% with display_value=widget.value|default:"3.00" %}
+<div class="cat-rating" data-cat-rating>
+    <div class="cat-rating__readout">
+        <span class="cat-rating__num" data-cat-num>{{ display_value }}</span><span class="cat-rating__of5">/ 5</span>
+    </div>
+    <p class="cat-rating__tier" data-cat-tier></p>
+    <div class="cat-rating__cats" data-cat-row>
+        <svg class="cat-rating__face" data-tier="1" style="color:var(--tier-1)"><use href="#cat-face"></use></svg>
+        <svg class="cat-rating__face" data-tier="2" style="color:var(--tier-2)"><use href="#cat-face"></use></svg>
+        <svg class="cat-rating__face" data-tier="3" style="color:var(--tier-3)"><use href="#cat-face"></use></svg>
+        <svg class="cat-rating__face" data-tier="4" style="color:var(--tier-4)"><use href="#cat-face"></use></svg>
+        <svg class="cat-rating__face" data-tier="5" style="color:var(--tier-5)"><use href="#cat-face"></use></svg>
+    </div>
+    <input type="{{ widget.type }}" name="{{ widget.name }}" value="{{ display_value }}"
+           data-cat-slider{% include "django/forms/widgets/attrs.html" %}>
+</div>
+{% endwith %}

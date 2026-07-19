@@ -1,0 +1,44 @@
+﻿{% extends "base.html" %}
+{% block title %}Dashboard - MeowMeowBeenz{% endblock %}
+{% block content %}
+    <h1>Dashboard</h1>
+
+    <section>
+        <h2>Awaiting your answer</h2>
+        {% if awaiting_your_answer %}
+            <ul class="poll-list">
+                {% for poll in awaiting_your_answer %}
+                    <li><a href="{% url 'predictions:poll_detail' poll.pk %}">{{ poll.item_name }}</a> — {{ poll.guesses.count }} guess{{ poll.guesses.count|pluralize }} in</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted">Nothing waiting on you.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h2>You can guess</h2>
+        {% if you_can_guess %}
+            <ul class="poll-list">
+                {% for poll in you_can_guess %}
+                    <li><a href="{% url 'predictions:poll_detail' poll.pk %}">{{ poll.item_name }}</a> — about {{ poll.subject.username }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted">No open polls to guess on right now.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h2>Waiting on others</h2>
+        {% if waiting_on_others %}
+            <ul class="poll-list">
+                {% for poll in waiting_on_others %}
+                    <li><a href="{% url 'predictions:poll_detail' poll.pk %}">{{ poll.item_name }}</a> — about {{ poll.subject.username }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted">Nothing pending.</p>
+        {% endif %}
+    </section>
+{% endblock %}

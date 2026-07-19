@@ -1,0 +1,25 @@
+﻿{% extends "base.html" %}
+{% block title %}Best at guessing {{ subject.username }} - MeowMeowBeenz{% endblock %}
+{% block content %}
+    <h1>Best at guessing {{ subject.username }}</h1>
+
+    {% if rows %}
+        <table class="leaderboard">
+            <thead>
+                <tr><th>User</th><th>Wins</th><th>Polls guessed</th><th>Win rate</th></tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.username }}</td>
+                        <td>{{ row.wins }}</td>
+                        <td>{{ row.guesses_total }}</td>
+                        <td>{{ row.win_rate|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">No closed polls about {{ subject.username }} yet.</p>
+    {% endif %}
+{% endblock %}

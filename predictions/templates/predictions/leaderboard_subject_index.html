@@ -1,0 +1,15 @@
+﻿{% extends "base.html" %}
+{% block title %}Leaderboards by Person - MeowMeowBeenz{% endblock %}
+{% block content %}
+    <h1>Leaderboards by person</h1>
+
+    {% if subjects %}
+        <ul class="poll-list">
+            {% for subject in subjects %}
+                <li><a href="{% url 'predictions:leaderboard_subject_detail' subject.pk %}">{{ subject.username }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">No closed polls yet.</p>
+    {% endif %}
+{% endblock %}

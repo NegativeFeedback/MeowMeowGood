@@ -1,0 +1,10 @@
+﻿{% extends "base.html" %}
+{% block title %}New Poll - MeowMeowBeenz{% endblock %}
+{% block content %}
+    <h1>Start a poll</h1>
+    <form method="post" enctype="multipart/form-data" class="stacked-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Start poll</button>
+    </form>
+{% endblock %}

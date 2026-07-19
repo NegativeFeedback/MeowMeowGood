@@ -1,0 +1,54 @@
+﻿{% extends "base.html" %}
+{% load cat_extras %}
+{% block title %}{{ poll.item_name }} - MeowMeowBeenz{% endblock %}
+{% block content %}
+    <h1>{{ poll.item_name }}</h1>
+    <p class="muted">
+        {% if poll.category %}{{ poll.category }} &middot; {% endif %}
+        About {{ poll.subject.username }} &middot; started by {{ poll.creator.username }}
+    </p>
+
+    {% if poll.image %}
+        <img src="{{ poll.image.url }}" alt="" class="poll-image">
+    {% endif %}
+
+    {% if poll.is_closed %}
+        <p class="actual-rating">{% cat_icon poll.actual_rating 32 %} {{ poll.subject.username }} actually rated it <strong>{{ poll.actual_rating }}/5</strong></p>
+
+        <h2>Guesses</h2>
+        {% if guesses %}
+            <ul class="guess-list">
+                {% for guess in guesses %}
+                    <li>
+                        {% cat_icon guess.value 22 %}
+                        {{ guess.guesser.username }} guessed {{ guess.value }}
+                        (off by {{ guess.distance }})
+                        {% if guess.is_winner %}<span class="badge">Winner</span>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted">No one guessed on this poll.</p>
+        {% endif %}
+    {% else %}
+        <p class="muted">{{ guess_count }} guess{{ guess_count|pluralize }} in so far. Guesses are hidden until {{ poll.subject.username }} reveals their rating.</p>
+
+        {% if is_subject %}
+            <h2>Reveal your rating</h2>
+            <form method="post" action="{% url 'predictions:poll_reveal' poll.pk %}" class="stacked-form">
+                {% csrf_token %}
+                {{ reveal_form.as_p }}
+                <button type="submit">Reveal &amp; close poll</button>
+            </form>
+        {% elif can_guess %}
+            <h2>Your guess</h2>
+            <form method="post" action="{% url 'predictions:poll_guess' poll.pk %}" class="stacked-form">
+                {% csrf_token %}
+                {{ guess_form.as_p }}
+                <button type="submit">Submit guess</button>
+            </form>
+        {% elif my_guess %}
+            <p>{% cat_icon my_guess.value 26 %} You guessed <strong>{{ my_guess.value }}/5</strong>. Waiting on {{ poll.subject.username }} to reveal the real rating.</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
