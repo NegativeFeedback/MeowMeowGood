@@ -13,7 +13,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN python manage.py collectstatic --noinput
+# Collectstatic must run with DEBUG off so it builds the same hashed manifest
+# that whitenoise will serve from at runtime (see config/settings.py STORAGES).
+RUN DJANGO_DEBUG=false DJANGO_SECRET_KEY=build-time-only python manage.py collectstatic --noinput
+
+ENV DJANGO_DEBUG=false
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \

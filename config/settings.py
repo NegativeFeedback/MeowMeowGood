@@ -143,7 +143,14 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        # The manifest backend requires `collectstatic` to have already run, so it's
+        # only safe to use once DEBUG is off (production/Docker). Local dev and the
+        # test suite never run collectstatic, so they fall back to the plain backend.
+        "BACKEND": (
+            "django.contrib.staticfiles.storage.StaticFilesStorage"
+            if DEBUG
+            else "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        ),
     },
 }
 
